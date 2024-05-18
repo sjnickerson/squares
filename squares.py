@@ -60,7 +60,12 @@ def solve_from_prefix(grid, path_prefix, word_prefix, trie):
       continue
     next_letter = grid[neighbour]
     if next_letter in trie:
-      found_words.extend(solve_from_prefix(grid, path_prefix + [neighbour], word_prefix + next_letter, trie[next_letter]))
+      found_words.extend(
+          solve_from_prefix(
+              grid,
+              path_prefix + [neighbour],
+              word_prefix + next_letter,
+              trie[next_letter]))
   return found_words
 
 
@@ -69,7 +74,12 @@ def solve(grid, trie):
   for start in range(16):
     start_letter = grid[start]
     if start_letter in trie:
-      found_words.extend(solve_from_prefix(grid, [start], str(start_letter), trie[start_letter]))
+      found_words.extend(
+          solve_from_prefix(
+              grid,
+              [start],
+              str(start_letter),
+              trie[start_letter]))
   return found_words
 
 
@@ -87,24 +97,33 @@ def parse_grid():
     sys.exit("Single argument must be the grid as a string of length 16 with optional separators, e.g. MTHU-ZURE-ZNKN-ALIC")
   return list(grid_str.upper())
 
+
 def output_grid(grid):
   for i in range(4):
     print('   '.join(grid[(i*4):(i*4+4)]))
     print()
   print()
-  
+ 
+ 
 def output_words(header, word_list):
-  print(header)
-  counter = 0
-  for w in word_list:
-    counter += 1
-    print("%-16s" % w, end="")
-    if counter % 4 == 0:
-      print()
-  if counter % 4 != 0:
+  print("%s (%d)" % (header, len(word_list)))
+  
+  # Make a copy of the words, padded out to a multiple of 4
+  word_list_padded = list(word_list)
+  q, r = divmod(len(word_list), 4)
+  if r != 0:
+    word_list_padded.extend(["" for i in range(4-r)])
+    q += 1
+  # Split it into q chunks of size 4, so that when we print it,
+  # it looks like the words are alphabetical in 4 columns.
+  partition = [word_list_padded[x::q] for x in range(q)]
+  for p in partition:
+    for w in p:
+      print("%-20s" % w, end="")
     print()
   print()
 
+  
 def main():
   grid = parse_grid()
   output_grid(grid)
