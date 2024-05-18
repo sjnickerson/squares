@@ -53,8 +53,6 @@ NEIGHBOURS = [
 
 def solve_from_prefix(grid, path_prefix, word_prefix, trie):
   found_words = []
-  if word_prefix == "RHEUM":
-    print(path_prefix)
   if "" in trie:
     found_words.append(word_prefix)
   for neighbour in NEIGHBOURS[path_prefix[-1]]:
